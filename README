@@ -1,0 +1,35 @@
+Directory contents and code structure
+-------------------------------------
+
+Provided code modules
+
+lu.cpp        : Main module
+elim.cpp      : Performs Gaussian Elimination.
+                This is where the heavy lifting is done
+cmdLine.cpp   : Parses command line arugments
+init.cpp      : Initializes the program, including the input matrix
+parTimer.cpp  : Parallel version of the Timer
+Report.cpp    : Reports various information
+Timer.cpp     : Serial Timer
+verify.cpp    : Verifies the outcome
+             
+
+cblock.h      : Holds configuration parameters
+lu.h          : Some constants needed by the code
+barrier.h     : Barrier synchronization
+
+
+***************************************************************************
+*** You should not change the following files                           ***
+*** Doing so could could cause your submission to be graded incorrectly ***
+***************************************************************************
+
+cmdLine.cpp
+init.cpp
+parTimer.cpp
+Report.cpp
+Timer.cpp
+verify.cpp
+
+cblock.h
+lu.h
