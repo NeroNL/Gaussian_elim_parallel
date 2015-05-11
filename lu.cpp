@@ -79,10 +79,7 @@ int main(int argc,char *argv[])
   initMat(cb.N, A, R, cb.MatCode);
 
   t0 = -getTime();
-  if(cb.NT < 1)
-    cerr << "invalid number of thread!!!!" << endl;
-  else
-    elim();
+  elim();
   t0 += getTime();
 
   /* print results */
