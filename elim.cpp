@@ -73,7 +73,7 @@ void parallel_elim(int startIndex, int increment){
 
   int i, j, k, Mx;
 
-  for ( k = 0; k < cb.N; k+=increment) {
+  for ( k = startIndex; k < cb.N; k+=increment) {
       if (cb.partialPivoting){ /* Partial Pivoting */
         Mx = k;
         for ( i = k+1; i < cb.N; i++ ) {
@@ -111,7 +111,7 @@ void elim()
     thread* thrd = new thread(cb.NT);
     int i = 0;
     for(i = 0; i < cb.NT-1; i++){
-      thrd[i] = thread(parallel, i, cb.NT);
+      thrd[i] = thread(parallel_elim, ref(i), cb.NT);
     }
 
     parallel_elim(i, cb.NT);
