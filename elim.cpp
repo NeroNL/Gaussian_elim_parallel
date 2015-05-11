@@ -108,7 +108,7 @@ void elim()
     serial_elim();
  } 
  else{
-    thread* thrd = new thread(cb.NT);
+    thread* thrd = new thread[cb.NT];
     int i = 0;
     for(i = 0; i < cb.NT-1; i++){
       thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT));
