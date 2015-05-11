@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
+#include <thread>
 #include "cblock.h"
 using namespace std;
 
@@ -112,7 +113,7 @@ void elim()
     for(i = 0; i < cb.NT-1; i++){
       thrd[i] = thread(parallel, i, cb.NT);
     }
-    
+
     parallel_elim(i, cb.NT);
 
     for(i = 0; i < cb.NT-1; i++){
