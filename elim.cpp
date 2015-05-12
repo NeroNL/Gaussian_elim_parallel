@@ -71,7 +71,7 @@ void serial_elim(){
   }
 }
 
-void parallel_elim(int startIndex, int increment, barrier &a){
+void parallel_elim(int startIndex, int increment){
   for ( int i = startIndex+1; i < cb.N; i+=increment ) {
     double Aik = A[i][startIndex];
     double *Ai = A[i];
@@ -125,10 +125,10 @@ void elim()
       thread* thrd = new thread[(cb.NT-1)];
       for(i = 0; i < cb.NT-1; i++){
         int startIndex = k+i;
-        thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT), a);
+        thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT));
       }
       
-      parallel_elim(k+i, cb.NT, a);
+      parallel_elim(k+i, cb.NT);
 
       for(i = 0; i < cb.NT-1; i++)
         thrd[i].join();
