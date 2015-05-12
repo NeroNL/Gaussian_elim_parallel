@@ -97,7 +97,7 @@ void elim()
  } 
  else{
     int i, k, Mx;
-    //thread* thrd;
+    thread* thrd = new thread[(cb.NT-1)];
 
     for ( k = 0; k < cb.N; k++) {
 
@@ -126,12 +126,13 @@ void elim()
       for ( i = k+1; i < cb.N; i++ ) 
             A[i][k] /= A[k][k];  
 
-      //thrd = new thread[(cb.NT-1)];
-      for(i = 0; i < cb.NT; i++){
+      //thrd 
+      for(i = 0; i < cb.NT-1; i++){
         int startIndex = k+i;
-        //thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT), ref(k));
-        parallel_elim(k+i, cb.NT, k);
+        thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT), ref(k));
       }
+
+      parallel_elim(k+i, cb.NT, k);
       
       
 
