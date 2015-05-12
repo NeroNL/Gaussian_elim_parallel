@@ -97,8 +97,7 @@ void partialPivoting_parallel(int k, int Mx){
   }
 }
 
-void elim()
-{
+void elim(){
  if(cb.NT == 1){
     serial_elim();
  } 
@@ -118,5 +117,4 @@ void elim()
         thrd[i].join();
 
     }
-  }
 }
