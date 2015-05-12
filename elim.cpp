@@ -23,7 +23,7 @@ using namespace std;
 
 extern double **A, **R;
 extern control_block cb;
-barrier count = cb.NT;
+barrier count = barrier(cb.NT);
 
 //
 // External Functions
