@@ -142,13 +142,11 @@ void elim()
       for(j = 0; j < cb.NT-1; j++){
         start = j*(cb.N/cb.NT);
         end = (j+1)*(cb.N/cb.NT);
-        if(j > cb.NT-2)
-          break;
         thrd[i] = thread(parallel_elim, ref(start), ref(end), ref(k));
-        
       }
-
-       parallel_elim(start, end, k);
+      start = j*(cb.N/cb.NT);
+      end = (j+1)*(cb.N/cb.NT);
+      parallel_elim(start, end, k);
 
 
       
