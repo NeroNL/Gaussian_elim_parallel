@@ -123,8 +123,10 @@ void elim()
             A[i][k] /= A[k][k];  
 
       thread* thrd = new thread[(cb.NT-1)];
-      for(i = 0; i < cb.NT-1; i++)
-        thrd[i] = thread(parallel_elim, k+i, cb.NT, a);
+      for(i = 0; i < cb.NT-1; i++){
+        int startIndex = k+i;
+        thrd[i] = thread(parallel_elim, startIndex, cb.NT, a);
+      }
       
       parallel_elim(k+i, cb.NT, a);
 
