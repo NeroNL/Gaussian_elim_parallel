@@ -27,7 +27,7 @@ public:
   inline void bsync(int dummy);
   
 private:
-  //barrier(const barrier&);  // disable copying barriers.
+  barrier(const barrier&);  // disable copying barriers.
   barrier(); //no null constructor.
   barrier& operator=(const barrier&); // disable assignment
   int m_nt;
