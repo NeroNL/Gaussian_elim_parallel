@@ -77,7 +77,7 @@ void parallel_elim(int startIndex, int increment){
     for ( int j = startIndex+1; j < cb.N; j+=increment ) 
       Ai[j] -= Aik * A[startIndex][j];
   }
-   bsync(barrier(increment));
+   barrier::bsync(barrier(increment));
 }
 
 void partialPivoting_parallel(int k, int Mx){
