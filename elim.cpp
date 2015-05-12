@@ -72,14 +72,21 @@ void serial_elim(){
 }
 
 
-void parallel_elim(int startIndex, int increment, int k){
-  for ( int i = startIndex+1; i < cb.N; i+=increment ) {
-    double Aik = A[i][k];
-    double *Ai = A[i];
-    for ( int j = k+1; j < cb.N; j++ ) 
-      Ai[j] -= Aik * A[k][j];
+void parallel_elim(int startIndex, int increment, int column){
+  for(int k = 0; k < cb.N; k+= increment){
+
+    for ( i = k+1; i < cb.N; i++ ) 
+      A[i][k] /= A[k][k];  
+
+    for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
+      double Aik = A[i][column];
+      double *Ai = A[i];
+      for ( int j = column+1; j < cb.N; j++ ) 
+        Ai[j] -= Aik * A[column][j];
+    }
+
+      count.bsync(k);
   }
-  count.bsync(k);
 }
 
 void partialPivoting_parallel(int k, int Mx){
@@ -96,60 +103,20 @@ void elim()
     serial_elim();
  } 
  else{
-    int i, j, k, Mx;
-
-    for ( k = 0; k < cb.N; k++) {
-
-      /* Partial Pivoting */
-      if (cb.partialPivoting){ 
-        Mx = k;
-        for ( i = k+1; i < cb.N; i++ ) {
-            if (fabs(A[i][k]) > fabs(A[Mx][k]))
-                Mx = i;
-        }
-
-        if (Mx > k){
-        //swaps++;
-          thread *thrds = new thread[cb.NT-1];
-          for(i = 0; i < cb.NT-1; i++)
-            thrds[i] = thread(partialPivoting_parallel, k, Mx);
-
-          partialPivoting_parallel(k, Mx);
-           
-          for(i = 0; i < cb.NT-1; i++)
-            thrds[i].join();
-        }
-      } /* End Partial Pivoting */
-
-
-      for ( i = k+1; i < cb.N; i++ ) 
-            A[i][k] /= A[k][k];  
 
       thread* thrd = new thread[(cb.NT-1)];
 
       //cyclic partitioning
       for(i = 0; i < cb.NT-1; i++){
-        int startIndex = k+i;
-        thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT), ref(k));
+        thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT), ref(k));
       }
 
-      parallel_elim(k+i, cb.NT, k);
+      parallel_elim(i, cb.NT, k);
 
-      //block partitioning
-
-      /*int start = 0;
-      int end = 0;
-      for(j = 0; j < cb.NT-1; j++){
-        start = j*(cb.N/cb.NT);
-        end = (j+1)*(cb.N/cb.NT);
-        thrd[i] = thread(parallel_elim, ref(start), ref(end), ref(k));
-      }
-      start = j*(cb.N/cb.NT);
-      end = (j+1)*(cb.N/cb.NT);
-      parallel_elim(start, end, k);*/
 
       for(i = 0; i < cb.NT-1; i++)
         thrd[i].join();
+
     }
   }
 }
