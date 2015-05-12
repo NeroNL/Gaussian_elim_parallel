@@ -79,6 +79,7 @@ void parallel_elim(int startIndex, int increment){
     for ( int j = startIndex+1; j < cb.N; j+=increment ) 
       Ai[j] -= Aik * A[startIndex][j];
   }
+  count.bsync(increment);
 }
 
 void partialPivoting_parallel(int k, int Mx){
@@ -95,7 +96,7 @@ void elim()
     serial_elim();
  } 
  else{
-    int i, j, k, Mx;
+    int i, k, Mx;
 
     for ( k = 0; k < cb.N; k++) {
 
@@ -112,6 +113,8 @@ void elim()
           thread *thrds = new thread[cb.NT-1];
           for(i = 0; i < cb.NT-1; i++)
             thrds[i] = thread(partialPivoting_parallel, k, Mx);
+
+          partialPivoting_parallel(k, Mx);
            
           for(i = 0; i < cb.NT-1; i++)
             thrds[i].join();
