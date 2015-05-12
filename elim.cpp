@@ -76,7 +76,7 @@ void parallel_elim(int startIndex, int increment, int k){
   for ( int i = startIndex+1; i < cb.N; i+=increment ) {
     double Aik = A[i][k];
     double *Ai = A[i];
-    for ( int j = startIndex+1; j < cb.N; j+=increment ) 
+    for ( int j = startIndex+1; j < cb.N; j++ ) 
       Ai[j] -= Aik * A[k][j];
   }
   count.bsync(increment);
@@ -126,12 +126,16 @@ void elim()
             A[i][k] /= A[k][k];  
 
       thread* thrd = new thread[(cb.NT-1)];
+
+
       for(i = 0; i < cb.NT-1; i++){
         int startIndex = k+i;
         thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT), ref(k));
       }
 
       parallel_elim(k+i, cb.NT, k);
+
+
       
       for(i = 0; i < cb.NT-1; i++)
         thrd[i].join();

@@ -40,29 +40,40 @@ public:
       int parent = (TID-1)/2;
       int left_child = TID*2+1;
       int right_child = TID*2+2;
+      bool pass = false;
       bool left_c = true;
       bool right_c = true;
 
       if(parent < 0){
         parent = 0;
       }
-      if(left_child > cb.NT-1){
-        (v_lc.at(TID)).left_lock.clear(memory_order_release);
-        (v_lc.at(TID)).left = true;
-      }
-      if(right_child > cb.NT-1){
-        (v_lc.at(TID)).right_lock.clear(memory_order_release);
-        (v_lc.at(TID)).right = true;
-      }
 
-      if((v_lc.at(TID)).left && (v_lc.at(TID)).right){
-        (v_lc.at(TID)).parent_lock.clear(memory_order_release);
-        (v_lc.at(TID)).parent = true;
-        return ;
+      if(!pass){
+        if(left_child > cb.NT-1 || (v_lc.at(TID)).left == false){
+          (v_lc.at(TID)).left_lock.clear(memory_order_release);
+          (v_lc.at(TID)).left = true;
+        }
+        else
+          while((v_lc.at(TID)).left != left_c);
+
+        if(right_child > cb.NT-1 || (v_lc.at(TID)).right == false){
+          (v_lc.at(TID)).right_lock.clear(memory_order_release);
+          (v_lc.at(TID)).right = true;
+        }
+        else
+          while((v_lc.at(TID)).right != right_c);
+
+        if((v_lc.at(TID)).left && (v_lc.at(TID)).right){
+          (v_lc.at(TID)).parent_lock.clear(memory_order_release);
+          (v_lc.at(TID)).parent = true;
+          pass = true;
+        }
       }
       else{
-        while((v_lc.at(TID)).left != left_c ||
-              (v_lc.at(TID)).right != right_c);
+        if((TID-1)%2 == 0)
+          (v_lc.at(parent)).right = true;
+        else if((TID-1)%2 == 1)
+          (v_lc.at(parent)).left = true;
       }
 
       /*bool left_c = (v_lc.at(left_child)).parent;
