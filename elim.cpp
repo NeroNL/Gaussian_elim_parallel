@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <math.h>
 #include <thread>
+#include "barrier.h"
 #include "cblock.h"
 using namespace std;
 
