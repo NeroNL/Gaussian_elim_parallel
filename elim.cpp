@@ -72,17 +72,17 @@ void serial_elim(){
 }
 
 
-void parallel_elim(int startIndex, int increment, int column){
-  for(int k = 0; k < cb.N; k+= increment){
+void parallel_elim(int startIndex, int increment){
+  for(int k = 0; k < cb.N; k++){
 
-    for ( i = k+1; i < cb.N; i++ ) 
+    for ( int i = k+1; i < cb.N; i++ ) 
       A[i][k] /= A[k][k];  
 
     for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
-      double Aik = A[i][column];
+      double Aik = A[i][k];
       double *Ai = A[i];
-      for ( int j = column+1; j < cb.N; j++ ) 
-        Ai[j] -= Aik * A[column][j];
+      for ( int j = k+1; j < cb.N; j++ ) 
+        Ai[j] -= Aik * A[k][j];
     }
 
       count.bsync(k);
@@ -107,14 +107,14 @@ void elim()
       thread* thrd = new thread[(cb.NT-1)];
 
       //cyclic partitioning
-      for(i = 0; i < cb.NT-1; i++){
-        thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT), ref(k));
+      for(int i = 0; i < cb.NT-1; i++){
+        thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT);
       }
 
-      parallel_elim(i, cb.NT, k);
+      parallel_elim(i, cb.NT);
 
 
-      for(i = 0; i < cb.NT-1; i++)
+      for(int i = 0; i < cb.NT-1; i++)
         thrd[i].join();
 
     }
