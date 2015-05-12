@@ -95,7 +95,7 @@ void elim()
  } 
  else{
     int i, j, k, Mx;
-    barrier a(cb.NT); 
+    barrier a = new barrier(cb.NT); 
 
     for ( k = 0; k < cb.N; k++) {
 
@@ -124,7 +124,7 @@ void elim()
 
       thread* thrd = new thread[(cb.NT-1)];
       for(i = 0; i < cb.NT-1; i++)
-        thrd[i] = thread(parallel_elim, ref(k+i), ref(cb.NT), a);
+        thrd[i] = thread(parallel_elim, k+i, cb.NT, a);
       
       parallel_elim(k+i, cb.NT, a);
 
