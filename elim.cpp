@@ -92,6 +92,10 @@ void partialPivoting_parallel(int k, int Mx){
 
 void elim()
 {
+
+
+ thread* thrd = new thread[(cb.NT-1)];
+ 
  if(cb.NT == 1){
     serial_elim();
  } 
@@ -125,7 +129,6 @@ void elim()
       for ( i = k+1; i < cb.N; i++ ) 
             A[i][k] /= A[k][k];  
 
-      thread* thrd = new thread[(cb.NT-1)];
       for(i = 0; i < cb.NT-1; i++){
         int startIndex = k+i;
         thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT), ref(k));
@@ -133,8 +136,9 @@ void elim()
       
       parallel_elim(k+i, cb.NT, k);
 
-      for(i = 0; i < cb.NT-1; i++)
-        thrd[i].join();
     }
+
+    for(i = 0; i < cb.NT-1; i++)
+        thrd[i].join();
   }
 }
