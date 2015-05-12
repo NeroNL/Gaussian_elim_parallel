@@ -72,7 +72,7 @@ void serial_elim(){
 }
 
 
-void parallel_elim(int startIndex, int incrementm int k){
+void parallel_elim(int startIndex, int increment, int k){
   for ( int i = startIndex+1; i < cb.N; i+=increment ) {
     double Aik = A[i][k];
     double *Ai = A[i];
@@ -101,7 +101,7 @@ void elim()
     for ( k = 0; k < cb.N; k++) {
 
       /* Partial Pivoting */
-      /*if (cb.partialPivoting){ 
+      if (cb.partialPivoting){ 
         Mx = k;
         for ( i = k+1; i < cb.N; i++ ) {
             if (fabs(A[i][k]) > fabs(A[Mx][k]))
@@ -131,7 +131,7 @@ void elim()
         thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT), ref(k));
       }
       
-      parallel_elim(k+i, cb.NT);
+      parallel_elim(k+i, cb.NT, k);
 
       for(i = 0; i < cb.NT-1; i++)
         thrd[i].join();
