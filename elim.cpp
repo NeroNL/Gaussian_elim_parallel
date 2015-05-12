@@ -23,7 +23,6 @@ using namespace std;
 
 extern double **A, **R;
 extern control_block cb;
-barrier count = barrier(cb.NT);
 
 //
 // External Functions
@@ -71,6 +70,10 @@ void serial_elim(){
   }
 }
 
+void barrier_return(barrier& count){
+  count.bsync(0);
+}
+
 void parallel_elim(int startIndex, int increment){
   for ( int i = startIndex+1; i < cb.N; i+=increment ) {
     double Aik = A[i][startIndex];
@@ -78,7 +81,7 @@ void parallel_elim(int startIndex, int increment){
     for ( int j = startIndex+1; j < cb.N; j+=increment ) 
       Ai[j] -= Aik * A[startIndex][j];
   }
-   //barrier::bsync(increment);
+   barrier_return(barrier(cb.NT));
 }
 
 void partialPivoting_parallel(int k, int Mx){
