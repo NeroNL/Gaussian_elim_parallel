@@ -125,7 +125,7 @@ void elim()
       thread* thrd = new thread[(cb.NT-1)];
       for(i = 0; i < cb.NT-1; i++){
         int startIndex = k+i;
-        thrd[i] = thread(parallel_elim, startIndex, cb.NT, a);
+        thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT), a);
       }
       
       parallel_elim(k+i, cb.NT, a);
