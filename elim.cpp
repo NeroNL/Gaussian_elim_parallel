@@ -76,7 +76,7 @@ void parallel_elim(int startIndex, int increment){
     for ( int j = startIndex+1; j < cb.N; j+=increment ) 
       Ai[j] -= Aik * A[startIndex][j];
   }
-  barrier();  
+   a.bsync(increment);
 }
 
 void partialPivoting_parallel(int k, int Mx){
@@ -94,7 +94,7 @@ void elim()
  } 
  else{
     int i, j, k, Mx;
-    
+    barrier a = new barrier(cb.NT); 
 
     for ( k = 0; k < cb.N; k++) {
 
