@@ -13,7 +13,6 @@
 #include <assert.h>
 #include <math.h>
 #include <thread>
-#include <barrier.h>
 #include "cblock.h"
 using namespace std;
 
@@ -95,7 +94,7 @@ void elim()
  } 
  else{
     int i, j, k, Mx;
-    barrier a = new barrier(cb.NT); 
+    barrier a(cb.NT); 
 
     for ( k = 0; k < cb.N; k++) {
 
