@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <math.h>
 #include <thread>
+#include <barrier.h>
 #include "cblock.h"
 using namespace std;
 
@@ -69,7 +70,7 @@ void serial_elim(){
   }
 }
 
-void parallel_elim(int startIndex, int increment){
+void parallel_elim(int startIndex, int increment, barrier a){
   for ( int i = startIndex+1; i < cb.N; i+=increment ) {
     double Aik = A[i][startIndex];
     double *Ai = A[i];
@@ -123,9 +124,9 @@ void elim()
 
       thread* thrd = new thread[(cb.NT-1)];
       for(i = 0; i < cb.NT-1; i++)
-        thrd[i] = thread(parallel_elim, ref(k+i), ref(cb.NT));
+        thrd[i] = thread(parallel_elim, ref(k+i), ref(cb.NT), a);
       
-      parallel_elim(k+i, cb.NT);
+      parallel_elim(k+i, cb.NT, a);
 
       for(i = 0; i < cb.NT-1; i++)
         thrd[i].join();
