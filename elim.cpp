@@ -73,13 +73,13 @@ void serial_elim(){
 
 
 void parallel_elim(int startIndex, int increment, int k){
-  for ( int i = startIndex+1; i < cb.N; i+=increment ) {
+  for ( int i = startIndex+1; i < increment; i++ ) {
     double Aik = A[i][k];
     double *Ai = A[i];
-    for ( int j = startIndex+1; j < cb.N; j++ ) 
+    for ( int j = k+1; j < cb.N; j++ ) 
       Ai[j] -= Aik * A[k][j];
   }
-  count.bsync(increment);
+  count.bsync(k);
 }
 
 void partialPivoting_parallel(int k, int Mx){
@@ -96,7 +96,7 @@ void elim()
     serial_elim();
  } 
  else{
-    int i, k, Mx;
+    int i, j, k, Mx;
 
     for ( k = 0; k < cb.N; k++) {
 
@@ -127,13 +127,28 @@ void elim()
 
       thread* thrd = new thread[(cb.NT-1)];
 
-
-      for(i = 0; i < cb.NT-1; i++){
+      //cyclic partitioning
+      /*for(i = 0; i < cb.NT-1; i++){
         int startIndex = k+i;
         thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT), ref(k));
       }
 
-      parallel_elim(k+i, cb.NT, k);
+      parallel_elim(k+i, cb.NT, k);*/
+
+      //block partitioning
+
+      int start = 0;
+      int end = 0;
+      for(j = 0; j < cb.NT-1; j++){
+        start = j*(cb.N/cb.NT);
+        end = (j+1)*(cb.N/cb.NT);
+        if(j > cb.NT-2)
+          break;
+        thrd[i] = thread(parallel_elim, ref(start), ref(end), ref(k));
+        
+      }
+
+       parallel_elim(start, end, k);
 
 
       
