@@ -102,15 +102,15 @@ void elim(){
     serial_elim();
  } 
  else{
-
+      int i = 0;
       thread* thrd = new thread[(cb.NT-1)];
 
       //cyclic partitioning
-      for(int i = 0; i < cb.NT-1; i++){
-        thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT);
+      for( i = 0; i < cb.NT-1; i++){
+        thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT));
       }
 
-      parallel_elim(i, cb.NT);
+      parallel_elim(ref(i), ref(cb.NT));
 
 
       for(int i = 0; i < cb.NT-1; i++)
