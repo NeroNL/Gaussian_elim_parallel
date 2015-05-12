@@ -70,35 +70,20 @@ void serial_elim(){
 }
 
 void parallel_elim(int startIndex, int increment){
+  for ( int i = startIndex+1; i < cb.N; i+=increment ) {
+    double Aik = A[i][startIndex];
+    double *Ai = A[i];
+    for ( int j = startIndex+1; j < cb.N; j+=increment ) 
+      Ai[j] -= Aik * A[startIndex][j];
+  }
+  barrier();  
+}
 
-  int i, j, k, Mx;
-
-  for ( k = startIndex; k < cb.N; k+=increment) {
-      if (cb.partialPivoting){ /* Partial Pivoting */
-        Mx = k;
-        for ( i = k+1; i < cb.N; i++ ) {
-            if (fabs(A[i][k]) > fabs(A[Mx][k]))
-                Mx = i;
-        }
-        if (Mx > k){
-    //        swaps++;
-            for ( j = k; j < cb.N; j++ ){
-                double t = A[Mx][j];
-                A[Mx][j] = A[k][j];
-                A[k][j] = t;
-            }
-        }
-      } /* End Partial Pivoting */
-
-    for ( i = k+1; i < cb.N; i++ ) 
-      A[i][k] /= A[k][k];  
-
-    for ( i = k+1; i < cb.N; i++ ) {
-      double Aik = A[i][k];
-      double *Ai = A[i];
-      for ( j = k+1; j < cb.N; j++ ) 
-        Ai[j] -= Aik * A[k][j];
-    }  
+void partialPivoting_parallel(int k, int Mx){
+  for ( int j = k; j < cb.N; j++ ){
+      double t = A[Mx][j];
+      A[Mx][j] = A[k][j];
+      A[k][j] = t;
   }
 }
 
@@ -108,16 +93,42 @@ void elim()
     serial_elim();
  } 
  else{
-    thread* thrd = new thread[cb.NT];
-    int i = 0;
-    for(i = 0; i < cb.NT-1; i++){
-      thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT));
-    }
+    int i, j, k, Mx;
+    
 
-    parallel_elim(i, cb.NT);
+    for ( k = 0; k < cb.N; k++) {
 
-    for(i = 0; i < cb.NT-1; i++){
-      thrd[i].join();
+      /* Partial Pivoting */
+      if (cb.partialPivoting){ 
+        Mx = k;
+        for ( i = k+1; i < cb.N; i++ ) {
+            if (fabs(A[i][k]) > fabs(A[Mx][k]))
+                Mx = i;
+        }
+
+        if (Mx > k){
+        //swaps++;
+          thread *thrds = new thread[cb.NT-1];
+          for(i = 0; i < cb.NT-1; i++)
+            thrds[i] = thread(partialPivoting_parallel, k, Mx);
+           
+          for(i = 0; i < cb.NT-1; i++)
+            thrds[i].join();
+        }
+      } /* End Partial Pivoting */
+
+
+      for ( i = k+1; i < cb.N; i++ ) 
+            A[i][k] /= A[k][k];  
+
+      thread* thrd = new thread[(cb.NT-1)];
+      for(i = 0; i < cb.NT-1; i++)
+        thrd[i] = thread(parallel_elim, ref(k+i), ref(cb.NT));
+      
+      parallel_elim(k+i, cb.NT);
+
+      for(i = 0; i < cb.NT-1; i++)
+        thrd[i].join();
     }
- }
+  }
 }
