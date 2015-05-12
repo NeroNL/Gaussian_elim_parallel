@@ -73,10 +73,10 @@ void serial_elim(){
 
 
 void parallel_elim(int startIndex, int increment, int k){
-  for ( int i = startIndex+1; i < increment; i++ ) {
+  for ( int i = startIndex+1; i < cb.N; i+=increment ) {
     double Aik = A[i][k];
     double *Ai = A[i];
-    for ( int j = k+1; j < cb.N; j++ ) 
+    for ( int j = startIndex+1; j < cb.N; j++ ) 
       Ai[j] -= Aik * A[k][j];
   }
   count.bsync(k);
@@ -128,16 +128,16 @@ void elim()
       thread* thrd = new thread[(cb.NT-1)];
 
       //cyclic partitioning
-      /*for(i = 0; i < cb.NT-1; i++){
+      for(i = 0; i < cb.NT-1; i++){
         int startIndex = k+i;
         thrd[i] = thread(parallel_elim, ref(startIndex), ref(cb.NT), ref(k));
       }
 
-      parallel_elim(k+i, cb.NT, k);*/
+      parallel_elim(k+i, cb.NT, k);
 
       //block partitioning
 
-      int start = 0;
+      /*int start = 0;
       int end = 0;
       for(j = 0; j < cb.NT-1; j++){
         start = j*(cb.N/cb.NT);
@@ -146,10 +146,8 @@ void elim()
       }
       start = j*(cb.N/cb.NT);
       end = (j+1)*(cb.N/cb.NT);
-      parallel_elim(start, end, k);
+      parallel_elim(start, end, k);*/
 
-
-      
       for(i = 0; i < cb.NT-1; i++)
         thrd[i].join();
     }
