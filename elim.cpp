@@ -20,17 +20,23 @@ using namespace std;
 //
 // Globals
 //
+int get_int();
 
 extern double **A, **R;
 extern control_block cb;
 barrier count(cb.NT);
 int tmp_count = 0;
+future<int> fu = async(get_int, 0);
 
 //
 // External Functions
 //
 double getTime();
 
+
+int get_int(int x){
+  return ++x;
+}
 
 //
 // Gaussian Elmination
@@ -76,7 +82,7 @@ void serial_elim(){
 void parallel_elim(int startIndex, int increment, int k0){
     int k = k0;
     cout << "k is " << k << endl;
-   // while(k < cb.N){
+    while(k < cb.N){
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
       }
@@ -88,10 +94,11 @@ void parallel_elim(int startIndex, int increment, int k0){
           Ai[j] -= Aik * A[k][j];
       }
 
+      k = fu.get();
+      
       count.bsync(startIndex);
-      ++k;
 
-    //}
+    }
     count.bsync(startIndex);
 }
 
@@ -112,13 +119,13 @@ void elim(){
       thread* thrd = new thread[(cb.NT-1)];
   
       //cyclic partitioning
-      for(k = 0; k < cb.N; k++){
+      //for(k = 0; k < cb.N; k++){
         //if(k == 0){
           for( i = 0; i < cb.NT-1; i++){
-            thrd[i] = thread(parallel_elim, i, cb.NT, k);
+            thrd[i] = thread(parallel_elim, i, cb.NT, 0);
           }
         //}
-      }
+      //}
         parallel_elim(i, cb.NT, k);
 
 
