@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <math.h>
 #include <thread>
+#include <future>
 #include "barrier.h"
 #include "cblock.h"
 using namespace std;
@@ -95,7 +96,7 @@ void parallel_elim(int startIndex, int increment, int k0){
       }
 
       k = fu.get();
-      
+
       count.bsync(startIndex);
 
     }
