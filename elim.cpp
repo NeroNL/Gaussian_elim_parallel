@@ -76,6 +76,7 @@ void serial_elim(){
 void parallel_elim(int startIndex, int increment, int k0){
     int k = k0;
     while(k < cb.N){
+      count.bsync(k);
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         //count.bsync(k);
         //cout << "thread number is: " << this_thread::get_id() << " i is : " << i << 
@@ -83,7 +84,7 @@ void parallel_elim(int startIndex, int increment, int k0){
         A[i][k] /= A[k][k];
       }
 
-      count.bsync(k);
+      //count.bsync(k);
 
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
