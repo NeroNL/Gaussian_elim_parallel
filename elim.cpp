@@ -84,14 +84,14 @@ void parallel_elim(int startIndex, int increment, int ko){
 
       count.bsync(k);
 
-      for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
+      /*for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         Aik = A[i][k];
         Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
       }
 
-      count.bsync(k);
+      count.bsync(k);*/
       k++;
     }
   
