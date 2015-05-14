@@ -25,6 +25,7 @@ extern double **A, **R;
 extern control_block cb;
 barrier count(cb.NT);
 int tmp_count = 0;
+int *partial_index = new int[cb.NT];
 
 //
 // External Functions
@@ -73,10 +74,42 @@ void serial_elim(){
 }
 
 
+
+void partialPivoting_parallel(int k, int startIndex, int increment){
+  int tmp = partial_index[0];
+  for(int i = 0; i < cn.NT-1;i++){
+    if(tmp < partial_index[i]){
+      tmp = partial_index[i];
+    }
+  }
+
+  if(tmp > k){
+    for(int j = startIndex+k; j < cb.N; j+=increment){
+      double t = A[tmp][j];
+      A[tmp][j] = A[k][j];
+      A[k][j] = t;
+    }
+  }
+}
+
+
 void parallel_elim(int startIndex, int increment, int k0){
     int k = k0;
 
     while(k < cb.N){
+
+      if (cb.partialPivoting){ /* Partial Pivoting */
+        Mx = k;
+        for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
+            if (fabs(A[i][k]) > fabs(A[Mx][k]))
+                Mx = i;
+        }
+        partial_index[startIndex] = Mx;
+        count.bsync(startIndex);
+        partialPivoting_parallel(k, startIndex, increment);
+        count.bsync(startIndex);
+      } /* End Partial Pivoting */
+
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
       }
@@ -99,13 +132,7 @@ void parallel_elim(int startIndex, int increment, int k0){
     count.bsync(startIndex);
 }
 
-void partialPivoting_parallel(int k, int Mx){
-  for ( int j = k; j < cb.N; j++ ){
-      double t = A[Mx][j];
-      A[Mx][j] = A[k][j];
-      A[k][j] = t;
-  }
-}
+
 
 void elim(){
  if(cb.NT == 1){
