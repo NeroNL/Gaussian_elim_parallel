@@ -77,10 +77,9 @@ void parallel_elim(int startIndex, int increment, int k){
 
     for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
       A[i][k] /= A[k][k];  
-      count.bsync(k);
     }
 
-   
+    count.bsync(k);
 
     for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
       double Aik = A[i][k];
@@ -109,7 +108,7 @@ void elim(){
       int i = 0, k;
       thread* thrd = new thread[(cb.NT-1)];
 
-      for(int k = 0; k < cb.N; k++){      
+      for(k = 0; k < cb.N; k++){      
       //cyclic partitioning
         for( i = 0; i < cb.NT-1; i++){
           thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT), ref(k));
@@ -118,9 +117,9 @@ void elim(){
         parallel_elim(ref(i), ref(cb.NT), ref(k));
       }
 
-
-      for(int i = 0; i < cb.NT-1; i++)
-          thrd[i].join();
+      for(k = 0; k < cb.N; k++)
+        for(int i = 0; i < cb.NT-1; i++)
+            thrd[i].join();
 
     }
 }
