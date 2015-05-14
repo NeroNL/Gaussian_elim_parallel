@@ -89,8 +89,7 @@ void parallel_elim(int startIndex, int increment){
       }
 
       count.bsync(increment);
-    }
-  
+    } 
 }
 
 void partialPivoting_parallel(int k, int Mx){
@@ -119,8 +118,8 @@ void elim(){
 
         //for(k = 0; k < cb.NT; k++){;}
 
-        //for(int i = 0; i < cb.NT; i++)
-          //  thrd[i].join();
+        for(int i = 0; i < cb.NT; i++)
+            thrd[i].join();
 
     }
 }
