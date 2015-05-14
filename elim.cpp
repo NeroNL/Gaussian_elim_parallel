@@ -95,6 +95,7 @@ void partialPivoting_parallel(int k, int startIndex, int increment){
 
 void parallel_elim(int startIndex, int increment){
     int k = 0, Mx = 0;
+    int i = 0, j = 0;
 
     while(k < cb.N){
       /* Partial Pivoting */
@@ -110,17 +111,16 @@ void parallel_elim(int startIndex, int increment){
         count.bsync(startIndex);
       }*/ /* End Partial Pivoting */
 
-      for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
+      for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
       }
 
       //count.bsync(startIndex);
-      cout << "start index is " << startIndex << endl;
-      
-      for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
+
+      for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
         double *Ai = A[i];
-        for ( int j = k+1; j < cb.N; j++ ) 
+        for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
       }
 
