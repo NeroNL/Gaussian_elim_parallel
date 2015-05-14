@@ -25,6 +25,7 @@ extern double **A, **R;
 extern control_block cb;
 barrier count(cb.NT);
 int tmp_count = 0;
+bool* c_b;
 
 //
 // External Functions
@@ -93,9 +94,9 @@ void parallel_elim(int startIndex, int increment, int k0){
 
       count.bsync(k);
       ++k;
-      count.bsync(k);
+
     }
-    k0 = k; 
+    count.bsync(k);
 }
 
 void partialPivoting_parallel(int k, int Mx){
