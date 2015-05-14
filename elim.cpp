@@ -86,7 +86,7 @@ void parallel_elim(int startIndex, int increment, int k0){
 
       for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
-        double Ai = A[i];
+        double *Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
       }
