@@ -74,7 +74,7 @@ void serial_elim(){
 
 
 void parallel_elim(int startIndex, int increment, int k0){
-    int i, jm k = k0;
+    int i, j,k = k0;
     double Aik;
     double *Ai;
     while(k < cb.N){
