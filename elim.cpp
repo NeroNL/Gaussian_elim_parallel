@@ -74,26 +74,27 @@ void serial_elim(){
 
 
 void parallel_elim(int startIndex, int increment, int k0){
-  int k = k0;
-  int i = 0;
-   while(k < cb.N){
-      for (i = startIndex+k+1; i < cb.N; i+=increment ) {
+    int k = k0;
+    while(k < cb.N){
+      for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
+        //count.bsync(k);
+        //cout << "thread number is: " << this_thread::get_id() << " i is : " << i << " startindex is: " << startIndex << " k is: " << k << endl;
         A[i][k] /= A[k][k];
-        cout << "i is " << i << " k is " << k << " A is " << A[i][k] << endl;
       }
 
-      count.bsync(i);
+      count.bsync(k);
 
-      for (i = startIndex+k+1; i < cb.N; i+=increment ) {
+      for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
         double *Ai = A[i];
         for ( int j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
       }
 
-            count.bsync(i);
-            k++;
-    } 
+      count.bsync(k);
+      ++k;
+    }
+  
 }
 
 void partialPivoting_parallel(int k, int Mx){
@@ -113,12 +114,9 @@ void elim(){
       thread* thrd = new thread[(cb.NT)];
   
       //cyclic partitioning
-      //for(k = 0; k < cb.N; k++){
         for( i = 0; i < cb.NT; i++){
           thrd[i] = thread(parallel_elim, i, cb.NT, k);
-          //thrd[i].detach();
         }
-      //}
 
         //for(k = 0; k < cb.NT; k++){;}
 
