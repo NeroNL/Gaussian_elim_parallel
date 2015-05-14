@@ -24,6 +24,7 @@ using namespace std;
 extern double **A, **R;
 extern control_block cb;
 barrier count(cb.NT);
+int tmp_count = 0;
 
 //
 // External Functions
@@ -72,23 +73,27 @@ void serial_elim(){
 }
 
 
-void parallel_elim(int startIndex, int increment, int k){
-  
+void parallel_elim(int startIndex, int increment, int ko){
+    int i, j, k = ko;
+    double aik;
+    double *Ai;
+    while(k < cb.N){
+      for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
+        A[i][k] /= A[k][k];  
+      }
 
-    for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
-      A[i][k] /= A[k][k];  
+      count.bsync(k);
+
+      for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
+        Aik = A[i][k];
+        *Ai = A[i];
+        for ( j = k+1; j < cb.N; j++ ) 
+          Ai[j] -= Aik * A[k][j];
+      }
+
+      count.bsync(k);
+      k++;
     }
-
-    count.bsync(k);
-
-    for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
-      double Aik = A[i][k];
-      double *Ai = A[i];
-      for ( int j = k+1; j < cb.N; j++ ) 
-        Ai[j] -= Aik * A[k][j];
-    }
-
-    count.bsync(k);
   
 }
 
@@ -105,19 +110,17 @@ void elim(){
     serial_elim();
  } 
  else{
-      int i = 0, k;
+      int i = 0, k = 0;
       thread* thrd = new thread[(cb.NT-1)];
-
-      for(k = 0; k < cb.N; k++){      
+  
       //cyclic partitioning
         for( i = 0; i < cb.NT-1; i++){
           thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT), ref(k));
         }
 
         parallel_elim(ref(i), ref(cb.NT), ref(k));
-      }
+      
 
-      for(k = 0; k < cb.N; k++)
         for(int i = 0; i < cb.NT-1; i++)
             thrd[i].join();
 
