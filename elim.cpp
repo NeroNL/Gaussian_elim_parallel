@@ -77,7 +77,7 @@ void parallel_elim(int startIndex, int increment, int k){
     int i, j;
     double Aik;
     double *Ai;
-    //while(k < cb.N){
+    while(k < cb.N){
       for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         cout << "thread number is: " << this_thread::get_id() << " i is : " << i << " startindex is: " << startIndex << " k is: " << k << endl;
         A[i][k] /= A[k][k];
@@ -93,8 +93,8 @@ void parallel_elim(int startIndex, int increment, int k){
       }
 
       count.bsync(k);
-      //k++;
-    //}
+      k++;
+    }
   
 }
 
@@ -116,10 +116,10 @@ void elim(){
   
       //cyclic partitioning
         for( i = 0; i < cb.NT; i++){
-          thrd[i] = thread(parallel_elim, i, cb.NT, ref(k));
+          thrd[i] = thread(parallel_elim, i, cb.NT, k);
         }
 
-        for(k = 0; k < cb.NT; k++){;}
+        //for(k = 0; k < cb.NT; k++){;}
 
         for(int i = 0; i < cb.NT; i++)
             thrd[i].join();
