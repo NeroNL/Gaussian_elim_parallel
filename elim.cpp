@@ -113,6 +113,8 @@ void parallel_elim(int startIndex, int increment){
 
       for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
+        if(i == 3 && k ==1)
+          cout << "stupid mistake" << endl;
       }
 
       //count.bsync(startIndex);
@@ -130,7 +132,7 @@ void parallel_elim(int startIndex, int increment){
     }
 
     //cout << "k is " << k << " start index is " << startIndex << endl;
-    //count.bsync(startIndex);
+    count.bsync(startIndex);
 }
 
 
