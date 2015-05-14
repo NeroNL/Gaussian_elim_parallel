@@ -79,8 +79,9 @@ void parallel_elim(int startIndex, int increment, int k0){
    while(k < cb.N){
       for (i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
+        cout << "i is " << i << " k is " << k << " A is " << A[i][k] << endl;
       }
-      cout << "i is " << i << endl;
+
       count.bsync(i);
 
       for (i = startIndex+k+1; i < cb.N; i+=increment ) {
