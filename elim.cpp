@@ -116,7 +116,7 @@ void elim(){
   
       //cyclic partitioning
         for( i = 0; i < cb.NT-1; i++){
-          thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT), ref(k));
+          thrd[i] = thread(parallel_elim, i, ref(cb.NT), ref(k));
         }
 
         parallel_elim(ref(i), ref(cb.NT), ref(k));
