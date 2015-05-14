@@ -77,12 +77,12 @@ void parallel_elim(int startIndex, int increment, int k0){
     int k = k0;
     while(k < cb.N){
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
-        count.bsync(k);
-        cout << "thread number is: " << this_thread::get_id() << " i is : " << i << " startindex is: " << startIndex << " k is: " << k << endl;
+        //count.bsync(k);
+        //cout << "thread number is: " << this_thread::get_id() << " i is : " << i << " startindex is: " << startIndex << " k is: " << k << endl;
         A[i][k] /= A[k][k];
       }
 
-      //count.bsync(k);
+      //
 
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
@@ -93,8 +93,9 @@ void parallel_elim(int startIndex, int increment, int k0){
 
       count.bsync(k);
       ++k;
+      count.bsync(k);
     }
-  
+    k0 = k; 
 }
 
 void partialPivoting_parallel(int k, int Mx){
@@ -117,7 +118,7 @@ void elim(){
         for( i = 0; i < cb.NT-1; i++){
           thrd[i] = thread(parallel_elim, i, cb.NT, k);
         }
-        parallel_elim(i, cb.NT, k);
+        parallel_elim(i, cb.NT, ref(k));
 
         //for(k = 0; k < cb.NT; k++){;}
 
