@@ -115,7 +115,7 @@ void elim(){
       for(k = 0; k < cb.N; k++){
         if(k == 0){
           for( i = 0; i < cb.NT-1; i++){
-            thrd[i] = thread(parallel_elim, i, cb.NT, ref(k));
+            thread(parallel_elim, i, cb.NT, k);
           }
         }
       }
