@@ -108,14 +108,14 @@ void parallel_elim(int TID, int NumThread){
         }
       }
 
-      /*count.bsync(start);
+      count.bsync(start);
 
       for ( i = start+1; i <= end; i++ ) {
         double Aik = A[i][k];
         double *Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
-      }*/
+      }
   
       ++k;
       count.bsync(start);
