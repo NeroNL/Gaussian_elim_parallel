@@ -108,9 +108,9 @@ void parallel_elim(int TID, int NumThread){
         }
       }
 
-      count.bsync(startIndex);
+      count.bsync(start);
 
-      for ( i = start1; i <= end; i++ ) {
+      for ( i = start+1; i <= end; i++ ) {
         double Aik = A[i][k];
         double *Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) 
@@ -118,12 +118,12 @@ void parallel_elim(int TID, int NumThread){
       }
 
       ++k;
-      count.bsync(startIndex);
+      count.bsync(start);
 
     }
 
     //cout << "k is " << k << " start index is " << startIndex << endl;
-    count.bsync(startIndex);
+    count.bsync(start);
 }
 
 
