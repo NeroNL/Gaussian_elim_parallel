@@ -130,7 +130,7 @@ void parallel_elim(int startIndex, int increment){
     }
 
     //cout << "k is " << k << " start index is " << startIndex << endl;
-    count.bsync(startIndex);
+    //count.bsync(startIndex);
 }
 
 
