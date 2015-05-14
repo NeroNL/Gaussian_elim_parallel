@@ -82,7 +82,7 @@ void parallel_elim(int startIndex, int increment){
 
       count.bsync(increment);
 
-      for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
+      for (i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
         double *Ai = A[i];
         for ( int j = k+1; j < cb.N; j++ ) 
