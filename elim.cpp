@@ -77,7 +77,7 @@ void serial_elim(){
 
 void partialPivoting_parallel(int k, int startIndex, int increment){
   int tmp = partial_index[0];
-  for(int i = 0; i < cn.NT-1;i++){
+  for(int i = 0; i < cb.NT-1;i++){
     if(tmp < partial_index[i]){
       tmp = partial_index[i];
     }
@@ -94,13 +94,13 @@ void partialPivoting_parallel(int k, int startIndex, int increment){
 
 
 void parallel_elim(int startIndex, int increment, int k0){
-    int k = k0;
+    int k = k0, Mx = 0;
 
     while(k < cb.N){
 
       if (cb.partialPivoting){ /* Partial Pivoting */
         Mx = k;
-        for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
+        for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
             if (fabs(A[i][k]) > fabs(A[Mx][k]))
                 Mx = i;
         }
