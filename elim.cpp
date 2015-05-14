@@ -74,7 +74,7 @@ void serial_elim(){
 
 
 void parallel_elim(int startIndex, int increment, int k0){
-    int i, j,k = k0;
+    int i, j, k = k0;
     double Aik;
     double *Ai;
     while(k < cb.N){
@@ -82,6 +82,7 @@ void parallel_elim(int startIndex, int increment, int k0){
       for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         cout << "thread number is: " << this_thread::get_id() << " i is : " << i << " startindex is: " << startIndex << " k is: " << k << endl;
         A[i][k] /= A[k][k];
+        count.bsync(k);
       }
 
       count.bsync(k);
@@ -91,6 +92,7 @@ void parallel_elim(int startIndex, int increment, int k0){
         Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
+        count.bsync(k);
       }
 
       count.bsync(k);
