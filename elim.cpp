@@ -72,7 +72,7 @@ void serial_elim(){
 }
 
 
-void parallel_elim(int startIndex, int increment){
+void parallel_elim(int startIndex, int increment, int k){
   
 
     for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
@@ -112,10 +112,10 @@ void elim(){
       for(int k = 0; k < cb.N; k++){      
       //cyclic partitioning
         for( i = 0; i < cb.NT-1; i++){
-          thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT));
+          thrd[i] = thread(parallel_elim, ref(i), ref(cb.NT), ref(k));
         }
 
-        parallel_elim(ref(i), ref(cb.NT));
+        parallel_elim(ref(i), ref(cb.NT), ref(k));
       }
 
 
