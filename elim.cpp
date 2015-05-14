@@ -113,13 +113,13 @@ void elim(){
   
       //cyclic partitioning
       for(k = 0; k < cb.N; k++){
-        if(k == 0){
+        //if(k == 0){
           for( i = 0; i < cb.NT-1; i++){
-            thread(parallel_elim, i, cb.NT, k);
+            thrd[i] = thread(parallel_elim, i, cb.NT, k));
           }
-        }
+        //}
       }
-        parallel_elim(i, cb.NT, ref(k));
+        parallel_elim(i, cb.NT, k);
 
 
         for(int i = 0; i < cb.NT-1; i++)
