@@ -75,6 +75,7 @@ void serial_elim(){
 
 void parallel_elim(int startIndex, int increment, int k0){
     int k = k0;
+    cout << "k is " << k << endl;
    // while(k < cb.N){
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
