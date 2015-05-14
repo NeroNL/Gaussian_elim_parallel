@@ -25,7 +25,6 @@ extern double **A, **R;
 extern control_block cb;
 barrier count(cb.NT);
 int tmp_count = 0;
-bool* c_b;
 
 //
 // External Functions
@@ -76,14 +75,10 @@ void serial_elim(){
 
 void parallel_elim(int startIndex, int increment, int k0){
     int k = k0;
-    while(k < cb.N){
+   // while(k < cb.N){
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
-        //count.bsync(k);
-        //cout << "thread number is: " << this_thread::get_id() << " i is : " << i << " startindex is: " << startIndex << " k is: " << k << endl;
         A[i][k] /= A[k][k];
       }
-
-      //
 
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
@@ -95,7 +90,7 @@ void parallel_elim(int startIndex, int increment, int k0){
       count.bsync(k);
       ++k;
 
-    }
+    //}
     count.bsync(k);
 }
 
@@ -121,7 +116,6 @@ void elim(){
         }
         parallel_elim(i, cb.NT, ref(k));
 
-        //for(k = 0; k < cb.NT; k++){;}
 
         for(int i = 0; i < cb.NT-1; i++)
             thrd[i].join();
