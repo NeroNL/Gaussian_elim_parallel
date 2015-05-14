@@ -75,7 +75,7 @@ void serial_elim(){
 
 void parallel_elim(int startIndex, int increment, int ko){
     int i, j, k = ko;
-    double aik;
+    double Aik;
     double *Ai;
     while(k < cb.N){
       for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
@@ -86,7 +86,7 @@ void parallel_elim(int startIndex, int increment, int ko){
 
       for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         Aik = A[i][k];
-        *Ai = A[i];
+        Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
       }
