@@ -75,7 +75,7 @@ void serial_elim(){
 
 void parallel_elim(int startIndex, int increment, int k0){
     int i, j, k = k0;
-    while(k < cb.N-1){
+    while(k < cb.N){
       for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         count.bsync(k);
         cout << "thread number is: " << this_thread::get_id() << " i is : " << i << " startindex is: " << startIndex << " k is: " << k << endl;
