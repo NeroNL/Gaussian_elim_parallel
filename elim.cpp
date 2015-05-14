@@ -90,11 +90,12 @@ void parallel_elim(int startIndex, int increment, int k0){
           Ai[j] -= Aik * A[k][j];
       }
 
-      count.bsync(startIndex);
       ++k;
+      count.bsync(startIndex);
+
     }
 
-    cout << "k is " << k << " start index is " << startIndex << endl;
+    //cout << "k is " << k << " start index is " << startIndex << endl;
     count.bsync(startIndex);
 }
 
