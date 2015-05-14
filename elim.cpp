@@ -99,7 +99,7 @@ void parallel_elim(int TID, int NumThread){
 
     while(k < cb.N){
       int distance = cb.N-k-1;
-      int start = (TID * (distance / NumThread))+k;
+      int start = (TID * distance / NumThread)+k;
       int end = ((TID+1) * distance / NumThread)+k;
 
       if(start < cb.N && end < cb.N){
@@ -108,15 +108,15 @@ void parallel_elim(int TID, int NumThread){
         }
       }
 
-      count.bsync(start);
+      /*count.bsync(start);
 
       for ( i = start+1; i <= end; i++ ) {
         double Aik = A[i][k];
         double *Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
-      }
-
+      }*/
+  
       ++k;
       count.bsync(start);
 
