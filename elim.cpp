@@ -115,7 +115,8 @@ void parallel_elim(int startIndex, int increment){
       }
 
       //count.bsync(startIndex);
-
+      cout << "start index is " << startIndex << endl;
+      
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
         double *Ai = A[i];
@@ -150,7 +151,7 @@ void elim(){
           }
         //}
       //}
-        parallel_elim(i, cb.NT, k);
+        parallel_elim(i, cb.NT);
 
         for(int i = 0; i < cb.NT-1; i++)
             thrd[i].join();
