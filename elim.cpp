@@ -76,6 +76,7 @@ void serial_elim(){
 void parallel_elim(int startIndex, int increment){
   int i = 0;
    for(int k = 0; k < cb.N; k++){
+    count.bsync(increment);
       for (i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
       }
@@ -89,7 +90,7 @@ void parallel_elim(int startIndex, int increment){
           Ai[j] -= Aik * A[k][j];
       }
 
-      count.bsync(increment);
+      
     } 
 }
 
