@@ -114,7 +114,7 @@ void elim(){
       //cyclic partitioning
       //for(k = 0; k < cb.N; k++){
         for( i = 0; i < cb.NT; i++){
-          thrd[i] = thread(parallel_elim, i, cb.NT);
+          thrd[i] = thread(parallel_elim, i, cb.NT, k);
           //thrd[i].detach();
         }
       //}
