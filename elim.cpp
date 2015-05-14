@@ -73,9 +73,9 @@ void serial_elim(){
 }
 
 
-void parallel_elim(int startIndex, int increment, int k){
-    //int k = k0;
-    //while(k < cb.N){
+void parallel_elim(int startIndex, int increment, int k0){
+    int k = k0;
+    while(k < cb.N){
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         //count.bsync(k);
         //cout << "thread number is: " << this_thread::get_id() << " i is : " << i << " startindex is: " << startIndex << " k is: " << k << endl;
@@ -92,8 +92,8 @@ void parallel_elim(int startIndex, int increment, int k){
       }
 
       count.bsync(k);
-      //++k;
-    //}
+      ++k;
+    }
   
 }
 
@@ -111,20 +111,18 @@ void elim(){
  } 
  else{
       int i = 0, k = 0;
-      thread* thrd = new thread[(cb.NT)];
+      thread* thrd = new thread[(cb.NT-1)];
   
       //cyclic partitioning
-      for(k = 0; k < cb.N; k++){
-        for( i = 0; i < cb.NT; i++){
+        for( i = 0; i < cb.NT-1; i++){
           thrd[i] = thread(parallel_elim, i, cb.NT, k);
-          thrd[i].detach();
         }
-      }
+        parallel_elim(i, cb.NT, k);
 
         //for(k = 0; k < cb.NT; k++){;}
 
-        //for(int i = 0; i < cb.NT; i++)
-          //  thrd[i].join();
+        for(int i = 0; i < cb.NT-1; i++)
+            thrd[i].join();
 
     }
 }
