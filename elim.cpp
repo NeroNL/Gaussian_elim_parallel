@@ -80,8 +80,8 @@ void parallel_elim(int startIndex, int increment, int k0){
       for (i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
       }
-
-      count.bsync(increment);
+      cout << "i is " << i << endl;
+      count.bsync(i);
 
       for (i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
@@ -90,7 +90,7 @@ void parallel_elim(int startIndex, int increment, int k0){
           Ai[j] -= Aik * A[k][j];
       }
 
-            count.bsync(increment);
+            count.bsync(i);
             k++;
     } 
 }
