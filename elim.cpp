@@ -73,8 +73,7 @@ void serial_elim(){
 }
 
 
-void parallel_elim(int startIndex, int increment, int k0){
-    int k = k0;
+void parallel_elim(int startIndex, int increment){
    for(int k = 0; k < cb.N; k++){
       count.bsync(k);
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
@@ -113,7 +112,7 @@ void elim(){
   
       //cyclic partitioning
         for( i = 0; i < cb.NT; i++){
-          thrd[i] = thread(parallel_elim, i, cb.NT, k);
+          thrd[i] = thread(parallel_elim, i, cb.NT);
         }
 
         //for(k = 0; k < cb.NT; k++){;}
