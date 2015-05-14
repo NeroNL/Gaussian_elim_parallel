@@ -123,7 +123,7 @@ void parallel_elim(int TID, int NumThread){
     }
 
     //cout << "k is " << k << " start index is " << startIndex << endl;
-    count.bsync(start);
+    //count.bsync(start);
 }
 
 
