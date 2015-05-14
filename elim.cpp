@@ -80,7 +80,7 @@ void parallel_elim(int startIndex, int increment){
         A[i][k] /= A[k][k];
       }
 
-      count.bsync(k);
+      count.bsync(increment);
 
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
@@ -89,7 +89,7 @@ void parallel_elim(int startIndex, int increment){
           Ai[j] -= Aik * A[k][j];
       }
 
-      count.bsync(k);
+      count.bsync(increment);
     }
   
 }
