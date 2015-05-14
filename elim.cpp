@@ -99,7 +99,7 @@ void parallel_elim(int startIndex, int increment, int k0){
         k = fu.get();
       else
         fu.wait();*/
-      k = get_int(k);  
+      ++k;
       count.bsync(startIndex);
 
     }
