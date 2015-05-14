@@ -77,7 +77,7 @@ void serial_elim(){
 
 void partialPivoting_parallel(int k, int startIndex, int increment){
   int tmp = partial_index[0];
-  for(int i = 0; i < cb.NT-1;i++){
+  for(int i = 0; i < cb.NT;i++){
     if(tmp < partial_index[i]){
       tmp = partial_index[i];
     }
@@ -93,12 +93,12 @@ void partialPivoting_parallel(int k, int startIndex, int increment){
 }
 
 
-void parallel_elim(int startIndex, int increment, int k0){
-    int k = k0, Mx = 0;
+void parallel_elim(int startIndex, int increment){
+    int k = 0, Mx = 0;
 
     while(k < cb.N){
-
-      if (cb.partialPivoting){ /* Partial Pivoting */
+      /* Partial Pivoting */
+      /*if (cb.partialPivoting){ 
         Mx = k;
         for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
             if (fabs(A[i][k]) > fabs(A[Mx][k]))
@@ -108,7 +108,7 @@ void parallel_elim(int startIndex, int increment, int k0){
         count.bsync(startIndex);
         partialPivoting_parallel(k, startIndex, increment);
         count.bsync(startIndex);
-      } /* End Partial Pivoting */
+      }*/ /* End Partial Pivoting */
 
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
@@ -146,7 +146,7 @@ void elim(){
       //for(k = 0; k < cb.N; k++){
         //if(k == 0){
           for( i = 0; i < cb.NT-1; i++){
-            thrd[i] = thread(parallel_elim, i, cb.NT, k);
+            thrd[i] = thread(parallel_elim, i, cb.NT);
           }
         //}
       //}
