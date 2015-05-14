@@ -78,6 +78,7 @@ void parallel_elim(int startIndex, int increment, int k){
     double Aik;
     double *Ai;
     while(k < cb.N){
+      count.bsync(k);
       for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         cout << "thread number is: " << this_thread::get_id() << " i is : " << i << " startindex is: " << startIndex << " k is: " << k << endl;
         A[i][k] /= A[k][k];
