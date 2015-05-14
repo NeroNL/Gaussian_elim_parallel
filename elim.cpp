@@ -21,7 +21,7 @@ using namespace std;
 //
 // Globals
 //
-int get_int();
+int get_int(int x);
 
 extern double **A, **R;
 extern control_block cb;
