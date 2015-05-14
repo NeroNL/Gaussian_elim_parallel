@@ -13,7 +13,6 @@
 #include <assert.h>
 #include <math.h>
 #include <thread>
-#include <future>
 #include "barrier.h"
 #include "cblock.h"
 using namespace std;
@@ -21,23 +20,17 @@ using namespace std;
 //
 // Globals
 //
-int get_int(int x);
 
 extern double **A, **R;
 extern control_block cb;
 barrier count(cb.NT);
 int tmp_count = 0;
-future<int> fu = async(get_int, 0);
 
 //
 // External Functions
 //
 double getTime();
 
-
-int get_int(int x){
-  return ++x;
-}
 
 //
 // Gaussian Elmination
@@ -82,7 +75,7 @@ void serial_elim(){
 
 void parallel_elim(int startIndex, int increment, int k0){
     int k = k0;
-    //cout << "k is " << k << endl;
+    cout << "k is " << k << endl;
     while(k < cb.N){
       for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
@@ -95,12 +88,8 @@ void parallel_elim(int startIndex, int increment, int k0){
           Ai[j] -= Aik * A[k][j];
       }
 
-      /*if(startIndex == 8)
-        k = fu.get();
-      else
-        fu.wait();*/
-      ++k;
       count.bsync(startIndex);
+      ++k;
 
     }
     count.bsync(startIndex);
