@@ -95,11 +95,11 @@ void parallel_elim(int startIndex, int increment, int k0){
           Ai[j] -= Aik * A[k][j];
       }
 
-      if(startIndex == 8)
+      /*if(startIndex == 8)
         k = fu.get();
       else
-        fu.wait();
-
+        fu.wait();*/
+      k = get_int(k);  
       count.bsync(startIndex);
 
     }
