@@ -70,6 +70,8 @@ void serial_elim(){
       for ( j = k+1; j < cb.N; j++ ) 
         Ai[j] -= Aik * A[k][j];
     }  
+    if(k == 0)
+      break;
   }
 }
 
