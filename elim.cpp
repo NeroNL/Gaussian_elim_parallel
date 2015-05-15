@@ -94,10 +94,10 @@ void partialPivoting_parallel(int k, int startIndex, int increment){
 
 
 void parallel_elim(int startIndex, int increment){
-    int k = 0, Mx = 0;
+    int k = 0;  
     int i = 0, j = 0;
 
-    while(k < cb.N){
+    for(k = 0; k < cb.N; k++){
       /* Partial Pivoting */
       /*if (cb.partialPivoting){ 
         Mx = k;
@@ -113,8 +113,6 @@ void parallel_elim(int startIndex, int increment){
 
       for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
-        if(i == 3)
-          cout << "stupid mistake " << startIndex << endl;
       }
 
       //count.bsync(startIndex);
@@ -126,7 +124,6 @@ void parallel_elim(int startIndex, int increment){
           Ai[j] -= Aik * A[k][j];
       }
 
-      ++k;
       count.bsync(startIndex);
 
     }
@@ -142,7 +139,7 @@ void elim(){
     serial_elim();
  } 
  else{
-      int i = 0, k = 0;
+      int i = 0;
       thread* thrd = new thread[(cb.NT-1)];
   
       //cyclic partitioning
