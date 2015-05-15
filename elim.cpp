@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <math.h>
 #include <thread>
+#include <mutex>
 #include "barrier.h"
 #include "cblock.h"
 using namespace std;
@@ -26,6 +27,7 @@ extern control_block cb;
 barrier count(cb.NT);
 int tmp_count = 0;
 int *partial_index = new int[cb.NT];
+mutex mtx;
 
 //
 // External Functions
@@ -114,8 +116,10 @@ void parallel_elim(int startIndex, int increment){
       index = startIndex+k+1;
       count.bsync(startIndex);
       for (  ;index < cb.N; index+=increment ) {
+        mtx.lock();
         A[index][k] /= A[k][k];
         cout << "k is " << k << " index is "<<  index << " A is " << A[index][k] << endl;
+        mtx.unlock();
       }
 
       count.bsync(startIndex);
