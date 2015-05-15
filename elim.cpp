@@ -100,7 +100,7 @@ void parallel_elim(int startIndex, int increment){
     int i = 0, j = 0;
 
     for(k = 0; k < cb.N; k++){
-      count.bsync(startIndex);
+      //count.bsync(startIndex);
       /* Partial Pivoting */
       /*if (cb.partialPivoting){ 
         Mx = k;
@@ -113,25 +113,25 @@ void parallel_elim(int startIndex, int increment){
         partialPivoting_parallel(k, startIndex, increment);
         count.bsync(startIndex);
       }*/ /* End Partial Pivoting */
-      index = startIndex+k+1;
-      count.bsync(startIndex);
-      for (  ;index < cb.N; index+=increment ) {
+
+      //count.bsync(startIndex);
+      for (index = startIndex+k+1; ;index < cb.N; index+=increment ) {
         mtx.lock();
         A[index][k] /= A[k][k];
-        cout << " k is " << k << " index is "<<  index << " A is " << A[index][k] << " Ak is " << A[k][k] << " TID is " << startIndex << endl;
-        mtx.unlock();
+         mtx.unlock();
       }
 
       count.bsync(startIndex);
-
-      i = startIndex+k+1;
-      count.bsync(startIndex);
-      for ( ; i < cb.N; i+=increment ) {
+//" A is " << A[index][k] <<
+      
+      for ( i = startIndex+k+1;; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
         double *Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) {
           mtx.lock();
+          cout << " k is " << k << " index is "<<  index <<  " Ak is " << A[i][j] << " TID is " << startIndex << endl;
           Ai[j] -= Aik * A[k][j];
+          cout << " k is " << k << " index is "<<  index <<  " Ak is " << A[i][j] << " TID is " << startIndex << endl;
           mtx.unlock();
         }
       }
