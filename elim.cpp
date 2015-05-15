@@ -95,7 +95,7 @@ void partialPivoting_parallel(int k, int startIndex, int increment){
 }
 
 
-void parallel_elim(int TID, int NumThread){
+void parallel_elim(double **A, int TID, int NumThread){
     int k = 0, Mx = 0;
     int i = 0, j = 0;
 
@@ -155,7 +155,7 @@ void elim(){
           for( i = 0; i < cb.NT; i++){
             //int start = i*(cb.NT/cb.N);
             //int end = (i+1)*(cb.NT/cb.N);
-            thrd[i] = thread(parallel_elim, i, cb.NT);
+            thrd[i] = thread(parallel_elim, A, i, cb.NT);
             count.bsync(i);
           }
         //}
