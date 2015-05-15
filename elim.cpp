@@ -104,8 +104,6 @@ void parallel_elim(int TID, int NumThread){
 
       if(start < cb.N && end < cb.N){
         for ( i = start+1; i <= end; i++ ) {
-          if(k == 1 && i == 2)
-            cout << "stupid" << endl;
           A[i][k] /= A[k][k];
         }
       }
@@ -115,6 +113,8 @@ void parallel_elim(int TID, int NumThread){
       for ( i = start+1; i <= end; i++ ) {
         double Aik = A[i][k];
         double *Ai = A[i];
+        if(k == 1 && i == 2)
+            cout << "stupid" << endl;
         for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
       }
