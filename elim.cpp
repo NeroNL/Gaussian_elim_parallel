@@ -115,16 +115,16 @@ void parallel_elim(int startIndex, int increment){
       }*/ /* End Partial Pivoting */
 
       //count.bsync(startIndex);
-      for (index = startIndex+k+1; ;index < cb.N; index+=increment ) {
+      for (index = startIndex+k+1 ;index < cb.N; index+=increment ) {
         mtx.lock();
         A[index][k] /= A[k][k];
-         mtx.unlock();
+        mtx.unlock();
       }
 
       count.bsync(startIndex);
 //" A is " << A[index][k] <<
       
-      for ( i = startIndex+k+1;; i < cb.N; i+=increment ) {
+      for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
         double *Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) {
