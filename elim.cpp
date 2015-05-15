@@ -104,6 +104,8 @@ void parallel_elim(int TID, int NumThread){
       int start = (TID * distance / NumThread)+k;
       int end = ((TID+1) * distance / NumThread)+k;
 
+      i = 0;
+      j = 0;
       if(start < cb.N && end < cb.N){
         for ( i = start+1; i <= end; i++ ) {
           A[i][k] /= A[k][k];
