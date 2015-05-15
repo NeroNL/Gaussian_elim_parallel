@@ -116,9 +116,9 @@ void parallel_elim(int startIndex, int increment){
 
       //count.bsync(startIndex);
       for (index = startIndex+k+1 ;index < cb.N; index+=increment ) {
-        mtx.lock();
+        //mtx.lock();
         A[index][k] /= A[k][k];
-        mtx.unlock();
+        //mtx.unlock();
       }
 
       count.bsync(startIndex);
@@ -128,11 +128,11 @@ void parallel_elim(int startIndex, int increment){
         double Aik = A[i][k];
         double *Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) {
-          mtx.lock();
+          //mtx.lock();
           //cout << " k is " << k << " index is "<<  i <<  " Ak is " << A[i][j] << " TID is " << startIndex << endl;
           Ai[j] -= Aik * A[k][j];
           //cout << " k is " << k << " index is "<<  i <<  " Ak is " << A[i][j] << " TID is " << startIndex << endl;
-          mtx.unlock();
+          //mtx.unlock();
         }
       }
 
