@@ -156,7 +156,7 @@ void elim(){
             //int start = i*(cb.NT/cb.N);
             //int end = (i+1)*(cb.NT/cb.N);
             thrd[i] = thread(parallel_elim, i, cb.NT);
-            count.bsync(start);
+            count.bsync(i);
           }
         //}
       //}
