@@ -119,6 +119,8 @@ void parallel_elim(int TID, int NumThread){
           Ai[j] -= Aik * A[k][j];
       }
   
+    if(k == 0)
+      break;
       ++k;
       count.bsync(start);
 
