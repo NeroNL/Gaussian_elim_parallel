@@ -118,7 +118,7 @@ void parallel_elim(int startIndex, int increment){
       for (  ;index < cb.N; index+=increment ) {
         mtx.lock();
         A[index][k] /= A[k][k];
-        cout << "k is " << k << " index is "<<  index << " A is " << A[index][k] << " Ak is " << A[k][k] << " TID is " << startIndex << endl;
+        cout << " k is " << k << " index is "<<  index << " A is " << A[index][k] << " Ak is " << A[k][k] << " TID is " << startIndex << endl;
         mtx.unlock();
       }
 
@@ -129,8 +129,11 @@ void parallel_elim(int startIndex, int increment){
       for ( ; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
         double *Ai = A[i];
-        for ( j = k+1; j < cb.N; j++ ) 
+        for ( j = k+1; j < cb.N; j++ ) {
+          mtx.lock();
           Ai[j] -= Aik * A[k][j];
+          mtx.unlock();
+        }
       }
 
       count.bsync(startIndex);
