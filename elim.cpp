@@ -152,20 +152,20 @@ void elim(){
  } 
  else{
       int i = 0;
-      thread* thrd = new thread[(cb.NT-1)];
+      thread* thrd = new thread[(cb.NT)];
   
       //cyclic partitioning
       //for(k = 0; k < cb.N; k++){
         //if(k == 0){
-      parallel_elim(i, cb.NT);
-          for( i = 0; i < cb.NT-1; i++){
-            thrd[i] = thread(parallel_elim, i+1, ref(cb.NT));
+      //parallel_elim(i, cb.NT);
+          for( i = 0; i < cb.NT; i++){
+            thrd[i] = thread(parallel_elim, i, ref(cb.NT));
           }
         //}
       //}
         
 
-        for(int i = 0; i < cb.NT-1; i++)
+        for(int i = 0; i < cb.NT; i++)
             thrd[i].join();
 
     }
