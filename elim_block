@@ -70,6 +70,8 @@ void serial_elim(){
       for ( j = k+1; j < cb.N; j++ ) 
         Ai[j] -= Aik * A[k][j];
     }  
+    if(k == 1)
+      break;
   }
 }
 
@@ -93,7 +95,7 @@ void partialPivoting_parallel(int k, int startIndex, int increment){
 }
 
 
-void parallel_elim(int TID, int NumThread){
+void parallel_elim(double **A, int TID, int NumThread){
     int k = 0, Mx = 0;
     int i = 0, j = 0;
 
@@ -102,21 +104,32 @@ void parallel_elim(int TID, int NumThread){
       int start = (TID * distance / NumThread)+k;
       int end = ((TID+1) * distance / NumThread)+k;
 
+      i = 0;
+      j = 0;
+      count.bsync(start);
       if(start < cb.N && end < cb.N){
         for ( i = start+1; i <= end; i++ ) {
           A[i][k] /= A[k][k];
+          if(k == 0)
+            cout << "i is " << i << " Aik is " << A[i][k] << endl;
+         /// if(k == 0 && i == 1 && TID == 0)
+          // cout << "lalalla" << endl;
         }
       }
-
+      i = 0;
       count.bsync(start);
 
       for ( i = start+1; i <= end; i++ ) {
         double Aik = A[i][k];
         double *Ai = A[i];
+        //if(k == 1 && i == 2 && TID == 0)
+          //  cout << "stupid" << endl;
         for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
       }
   
+    if(k == 1)
+      break;
       ++k;
       count.bsync(start);
 
@@ -129,10 +142,10 @@ void parallel_elim(int TID, int NumThread){
 
 
 void elim(){
- if(cb.NT == 1){
+ /*if(cb.NT == 1){
     serial_elim();
  } 
- else{
+ else{*/
       int i = 0, k = 0;
       thread* thrd = new thread[(cb.NT)];
   
@@ -142,7 +155,8 @@ void elim(){
           for( i = 0; i < cb.NT; i++){
             //int start = i*(cb.NT/cb.N);
             //int end = (i+1)*(cb.NT/cb.N);
-            thrd[i] = thread(parallel_elim, i, cb.NT);
+            thrd[i] = thread(parallel_elim, A, i, cb.NT);
+            count.bsync(i);
           }
         //}
       //}
@@ -150,5 +164,5 @@ void elim(){
         for(int i = 0; i < cb.NT; i++)
             thrd[i].join();
 
-    }
+   // }
 }

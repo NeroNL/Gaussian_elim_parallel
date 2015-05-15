@@ -70,8 +70,6 @@ void serial_elim(){
       for ( j = k+1; j < cb.N; j++ ) 
         Ai[j] -= Aik * A[k][j];
     }  
-    if(k == 1)
-      break;
   }
 }
 
@@ -95,74 +93,70 @@ void partialPivoting_parallel(int k, int startIndex, int increment){
 }
 
 
-void parallel_elim(double **A, int TID, int NumThread){
+void parallel_elim(int startIndex, int increment){
     int k = 0, Mx = 0;
     int i = 0, j = 0;
 
     while(k < cb.N){
-      int distance = cb.N-k-1;
-      int start = (TID * distance / NumThread)+k;
-      int end = ((TID+1) * distance / NumThread)+k;
-
-      i = 0;
-      j = 0;
-      count.bsync(start);
-      if(start < cb.N && end < cb.N){
-        for ( i = start+1; i <= end; i++ ) {
-          A[i][k] /= A[k][k];
-          if(k == 0)
-            cout << "i is " << i << " Aik is " << A[i][k] << endl;
-         /// if(k == 0 && i == 1 && TID == 0)
-          // cout << "lalalla" << endl;
+      /* Partial Pivoting */
+      /*if (cb.partialPivoting){ 
+        Mx = k;
+        for ( int i = startIndex+k+1; i < cb.N; i+=increment ) {
+            if (fabs(A[i][k]) > fabs(A[Mx][k]))
+                Mx = i;
         }
-      }
-      i = 0;
-      count.bsync(start);
+        partial_index[startIndex] = Mx;
+        count.bsync(startIndex);
+        partialPivoting_parallel(k, startIndex, increment);
+        count.bsync(startIndex);
+      }*/ /* End Partial Pivoting */
 
-      for ( i = start+1; i <= end; i++ ) {
+      for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
+        A[i][k] /= A[k][k];
+        if(i == 3)
+          cout << "stupid mistake " << startIndex << endl;
+      }
+
+      //count.bsync(startIndex);
+
+      for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
         double *Ai = A[i];
-        //if(k == 1 && i == 2 && TID == 0)
-          //  cout << "stupid" << endl;
         for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
       }
-  
-    if(k == 1)
-      break;
+
       ++k;
-      count.bsync(start);
+      count.bsync(startIndex);
 
     }
 
     //cout << "k is " << k << " start index is " << startIndex << endl;
-    //count.bsync(start);
+    count.bsync(startIndex);
 }
 
 
 
 void elim(){
- /*if(cb.NT == 1){
+ if(cb.NT == 1){
     serial_elim();
  } 
- else{*/
+ else{
       int i = 0, k = 0;
-      thread* thrd = new thread[(cb.NT)];
+      thread* thrd = new thread[(cb.NT-1)];
   
       //cyclic partitioning
       //for(k = 0; k < cb.N; k++){
         //if(k == 0){
-          for( i = 0; i < cb.NT; i++){
-            //int start = i*(cb.NT/cb.N);
-            //int end = (i+1)*(cb.NT/cb.N);
-            thrd[i] = thread(parallel_elim, A, i, cb.NT);
-            count.bsync(i);
+          for( i = 0; i < cb.NT-1; i++){
+            thrd[i] = thread(parallel_elim, i, cb.NT);
           }
         //}
       //}
+        parallel_elim(i, cb.NT);
 
-        for(int i = 0; i < cb.NT; i++)
+        for(int i = 0; i < cb.NT-1; i++)
             thrd[i].join();
 
-   // }
+    }
 }
