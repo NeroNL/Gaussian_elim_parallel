@@ -129,9 +129,9 @@ void parallel_elim(int startIndex, int increment){
         double *Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) {
           mtx.lock();
-          cout << " k is " << k << " index is "<<  i <<  " Ak is " << A[i][j] << " TID is " << startIndex << endl;
+          //cout << " k is " << k << " index is "<<  i <<  " Ak is " << A[i][j] << " TID is " << startIndex << endl;
           Ai[j] -= Aik * A[k][j];
-          cout << " k is " << k << " index is "<<  i <<  " Ak is " << A[i][j] << " TID is " << startIndex << endl;
+          //cout << " k is " << k << " index is "<<  i <<  " Ak is " << A[i][j] << " TID is " << startIndex << endl;
           mtx.unlock();
         }
       }
@@ -157,12 +157,13 @@ void elim(){
       //cyclic partitioning
       //for(k = 0; k < cb.N; k++){
         //if(k == 0){
+      parallel_elim(i, cb.NT);
           for( i = 0; i < cb.NT-1; i++){
-            thrd[i] = thread(parallel_elim, i, ref(cb.NT));
+            thrd[i] = thread(parallel_elim, i+1, ref(cb.NT));
           }
         //}
       //}
-        parallel_elim(i, cb.NT);
+        
 
         for(int i = 0; i < cb.NT-1; i++)
             thrd[i].join();
