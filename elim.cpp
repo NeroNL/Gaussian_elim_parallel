@@ -108,7 +108,9 @@ void parallel_elim(int TID, int NumThread){
         for ( i = start+1; i <= end; i++ ) {
           A[i][k] /= A[k][k];
           //if(k == 1)
-            cout << "i is " << i << " TID is " << TID << " k is " << k << endl;
+            //cout << "i is " << i << " TID is " << TID << " k is " << k << endl;
+          if(k == 1 && i == 2 && TID == 0)
+            cout << "lalalla" << endl;
         }
       }
       i = 0;
