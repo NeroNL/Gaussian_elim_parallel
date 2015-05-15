@@ -139,10 +139,10 @@ void parallel_elim(int TID, int NumThread){
 
 
 void elim(){
- if(cb.NT == 1){
+ /*if(cb.NT == 1){
     serial_elim();
  } 
- else{
+ else{*/
       int i = 0, k = 0;
       thread* thrd = new thread[(cb.NT)];
   
@@ -160,5 +160,5 @@ void elim(){
         for(int i = 0; i < cb.NT; i++)
             thrd[i].join();
 
-    }
+   // }
 }
