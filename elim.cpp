@@ -98,6 +98,7 @@ void parallel_elim(int startIndex, int increment){
     int i = 0, j = 0;
 
     for(k = 0; k < cb.N; k++){
+      count.bsync(startIndex);
       /* Partial Pivoting */
       /*if (cb.partialPivoting){ 
         Mx = k;
@@ -110,14 +111,17 @@ void parallel_elim(int startIndex, int increment){
         partialPivoting_parallel(k, startIndex, increment);
         count.bsync(startIndex);
       }*/ /* End Partial Pivoting */
-
-      for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
+      i = startIndex+k+1;
+      count.bsync(startIndex);
+      for (  ;i < cb.N; i+=increment ) {
         A[i][k] /= A[k][k];
       }
 
-      //count.bsync(startIndex);
+      count.bsync(startIndex);
 
-      for ( i = startIndex+k+1; i < cb.N; i+=increment ) {
+      i = startIndex+k+1;
+      count.bsync(startIndex);
+      for ( ; i < cb.N; i+=increment ) {
         double Aik = A[i][k];
         double *Ai = A[i];
         for ( j = k+1; j < cb.N; j++ ) 
@@ -146,7 +150,7 @@ void elim(){
       //for(k = 0; k < cb.N; k++){
         //if(k == 0){
           for( i = 0; i < cb.NT-1; i++){
-            thrd[i] = thread(parallel_elim, i, cb.NT);
+            thrd[i] = thread(parallel_elim, i, ref(cb.NT));
           }
         //}
       //}
