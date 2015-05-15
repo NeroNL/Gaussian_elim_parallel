@@ -112,8 +112,8 @@ void parallel_elim(int TID, int NumThread){
           A[i][k] /= A[k][k];
           //if(k == 1)
             //cout << "i is " << i << " TID is " << TID << " k is " << k << endl;
-          if(k == 0 && i == 1 && TID == 0)
-            cout << "lalalla" << endl;
+         /// if(k == 0 && i == 1 && TID == 0)
+          // cout << "lalalla" << endl;
         }
       }
       i = 0;
@@ -122,8 +122,8 @@ void parallel_elim(int TID, int NumThread){
       for ( i = start+1; i <= end; i++ ) {
         double Aik = A[i][k];
         double *Ai = A[i];
-        if(k == 1 && i == 2 && TID == 0)
-            cout << "stupid" << endl;
+        //if(k == 1 && i == 2 && TID == 0)
+          //  cout << "stupid" << endl;
         for ( j = k+1; j < cb.N; j++ ) 
           Ai[j] -= Aik * A[k][j];
       }
@@ -156,6 +156,7 @@ void elim(){
             //int start = i*(cb.NT/cb.N);
             //int end = (i+1)*(cb.NT/cb.N);
             thrd[i] = thread(parallel_elim, i, cb.NT);
+            count.bsync(start);
           }
         //}
       //}
