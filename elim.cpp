@@ -94,7 +94,7 @@ void partialPivoting_parallel(int k, int startIndex, int increment){
 
 
 void parallel_elim(int startIndex, int increment){
-    int k = 0;  
+    int k = 0, index = 0;  
     int i = 0, j = 0;
 
     for(k = 0; k < cb.N; k++){
@@ -111,10 +111,10 @@ void parallel_elim(int startIndex, int increment){
         partialPivoting_parallel(k, startIndex, increment);
         count.bsync(startIndex);
       }*/ /* End Partial Pivoting */
-      i = startIndex+k+1;
+      index = startIndex+k+1;
       count.bsync(startIndex);
-      for (  ;i < cb.N; i+=increment ) {
-        A[i][k] /= A[k][k];
+      for (  ;index < cb.N; index+=increment ) {
+        A[index][k] /= A[k][k];
       }
 
       count.bsync(startIndex);
