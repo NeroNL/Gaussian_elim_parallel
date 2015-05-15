@@ -107,6 +107,7 @@ void parallel_elim(int TID, int NumThread){
       if(start < cb.N && end < cb.N){
         for ( i = start+1; i <= end; i++ ) {
           A[i][k] /= A[k][k];
+          cout << "i is " << i << " TID is " << TID << endl;
         }
       }
       i = 0;
