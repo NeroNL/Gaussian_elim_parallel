@@ -118,7 +118,7 @@ void parallel_elim(int startIndex, int increment){
       for (  ;index < cb.N; index+=increment ) {
         mtx.lock();
         A[index][k] /= A[k][k];
-        cout << "k is " << k << " index is "<<  index << " A is " << A[index][k] << endl;
+        cout << "k is " << k << " index is "<<  index << " A is " << A[index][k] << " Ak is " << A[k][k] << endl;
         mtx.unlock();
       }
 
